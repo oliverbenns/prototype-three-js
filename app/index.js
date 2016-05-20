@@ -1,22 +1,35 @@
 import THREE from 'three';
 
-var scene = new THREE.Scene();
+// Should probably extend something else here.
+// Maybe Weird to have geometry and mesh together.
+class Mountain extends THREE.CylinderGeometry {
+	constructor() {
+		super(0, 30, 80, 4, 1, true); // Need to know what these params are + what pass into instance (position only / different sizing?)
+	}
 
-var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
+	createMesh() {
+		var material = new THREE.MeshBasicMaterial({
+			color: 0x00ff00,
+			wireframe: true
+		});
+
+		return new THREE.Mesh(this, material);
+	}
+}
+
+const scene = new THREE.Scene();
+
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
 camera.position.z = 1000;
 
-// CUBE
-var geometry = new THREE.BoxGeometry(200, 200, 200);
-var material = new THREE.MeshBasicMaterial({
-	color: 0x00ff00,
-	wireframe: true
-});
+// MOUNTAIN
+const mountain = new Mountain();
+const mountainMesh = mountain.createMesh();
 
-var cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
+scene.add(mountainMesh);
 
 // RENDERER
-var renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 
 document.body.appendChild(renderer.domElement);
@@ -24,8 +37,9 @@ document.body.appendChild(renderer.domElement);
 function render() {
 	requestAnimationFrame(render);
 
-	cube.rotation.x += 0.02;
-	cube.rotation.y += 0.02;
+
+	mountainMesh.rotation.x += 0.02;
+	mountainMesh.rotation.y += 0.02;
 
 	renderer.render(scene, camera);
 };
